@@ -33,7 +33,6 @@
 </head>
 
 <body>
-	<header>Atlantik</header>
 	<?php include 'menu.php'?>
 
 	<div class="container">
