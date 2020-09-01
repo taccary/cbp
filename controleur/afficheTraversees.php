@@ -14,9 +14,13 @@ if (isset($_GET['secteur'])){
 
 $dateTraversee = date("Y-m-d");
 if (isset($_POST['liaison']) && isset($_POST['date'])){
-    $traversees = getTraverseesByLiaisonAndDate($_POST['liaison'], $_POST['date']);
-    $LiaisonSelectionnee = getLiaisonById($_POST['liaison']);
+    $idLiaison = $_POST['liaison'];
     $dateTraversee = $_POST['date'];
+    $LiaisonSelectionnee = getLiaisonById($idLiaison);
+    $traversees = getTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
+    $placesCapacite = getPlacesTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
+    $placesReservees = getPlacesReservesTraversees();
+    // $placesDispo = getPlacesDispoTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
 }
 
 $titre = "Horaires des traversées";
@@ -24,4 +28,5 @@ $titre = "Horaires des traversées";
 include "$racine/vue/header.php";
 include "$racine/vue/vueAfficheTraversees.php";
 include "$racine/vue/footer.php";
+
 ?>

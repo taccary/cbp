@@ -2,7 +2,7 @@
   //var_dump($liaisons);
   //var_dump($LiaisonSelectionnee);
   //var_dump($traversees)
-
+  //var_dump($places);
 ?>
 
 
@@ -106,9 +106,18 @@
               <td><?= $traversee['num'] ?></td>
               <td><?= $traversee['heure'] ?></td>
               <td><?= $traversee['nom'] ?></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <?php
+              foreach ($categories as $categorie){
+                $placesDispo = $placesCapacite[$traversee['num']][$categorie['lettre']];
+                if (isset($placesReservees[$traversee['num']][$categorie['lettre']])){
+                  $placesDispo = $placesCapacite[$traversee['num']][$categorie['lettre']] - $placesReservees[$traversee['num']][$categorie['lettre']];
+                }
+
+              ?>
+                <td><?= $placesDispo ?></td>
+              <?php
+              }
+              ?>
               <td><input type="radio" id="traversee" name="traversee" value="<?= $traversee['num'] ?>"></td>
             </tr>
           <?php

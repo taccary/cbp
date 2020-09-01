@@ -1,5 +1,4 @@
 <?php
-
 function controleurPrincipal($action) {
     $lesActions = array();
     $lesActions["defaut"] = "accueil.php";
@@ -7,7 +6,6 @@ function controleurPrincipal($action) {
     $lesActions["liaisons"]= "afficheLiaisons.php";
     $lesActions["tarifs"]= "afficheTarifs.php";
     $lesActions["traversees"]= "afficheTraversees.php";
-    
 
     if (array_key_exists($action, $lesActions)) {
         return $lesActions[$action];
@@ -15,5 +13,5 @@ function controleurPrincipal($action) {
         return $lesActions["defaut"];
     }
 }
-
 ?>
+

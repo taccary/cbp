@@ -295,32 +295,68 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-
-    function getPlacesDispoTraverseesByLiaisonAndDate($idLiaison, $date){
-
-        // pour chaque traversée, pour chaque categorie aller compter : nb de place dans de ce bateau dans contenance_bateau et soustraire le nb de places déja reservées dans reservation jointure avec détails reservation
-        /*$resultat = array();
+    function getPlacesTraverseesByLiaisonAndDate($idLiaison, $date){
+        // pour chaque traversée, pour chaque categorie on compte le nb de place totales dans de ce bateau dans contenance_bateau 
+        $resultat = array();
         try {
             $cnx = getPDO();
-            $req = $cnx->prepare("SELECT * FROM traversee T JOIN bateau B ON B.id=T.idBateau
-            where codeLiaison=:idLiaison
-            AND date=:date
-            ORDER BY heure");
+            $req = $cnx->prepare("SELECT num, idBateau FROM traversee T where codeLiaison=:idLiaison
+            AND date=:date");
             $req->bindValue(':idLiaison', $idLiaison, PDO::PARAM_INT);
             $req->bindValue(':date', $date, PDO::PARAM_STR);
             $req->execute();
 
             $ligne = $req->fetch(PDO::FETCH_ASSOC);
             while ($ligne) {
-                $resultat[] = $ligne;
+                $req2 = $cnx->prepare("SELECT * FROM contenance_bateau where idBateau=:id");
+                $req2->bindValue(':id', $ligne['idBateau'], PDO::PARAM_INT);
+                $req2->execute();              
+                $ligne2 = $req2->fetch(PDO::FETCH_ASSOC);
+                while ($ligne2) {
+
+                    $resultat[$ligne['num']][$ligne2['lettreCategorie']] = intval($ligne2['capaciteMax']);                   
+                    $ligne2 = $req2->fetch(PDO::FETCH_ASSOC);
+                }
                 $ligne = $req->fetch(PDO::FETCH_ASSOC);
             }
         } catch (PDOException $e) {
             print "Erreur !: " . $e->getMessage();
             die();
-        }*/
+        }
+        return $resultat;
+    }
 
+    function getPlacesReservesTraversees(){
+        // pour chaque traversée/categorie aller compter : nb de place reservées dans detail_reservation
+        $resultat = array();
+        try {
+            $cnx = getPDO();
+            $req = $cnx->prepare("SELECT r.numTraversee, d.lettreCategorie, sum(d.quantité) as 'placesReservees' FROM reservation r JOIN detail_reservation d ON d.numReservation = r.num GROUP BY r.numTraversee, d.lettreCategorie");
+            $req->execute();
 
+            $ligne = $req->fetch(PDO::FETCH_ASSOC);
+            while ($ligne) {
+                    $resultat[$ligne['numTraversee']][$ligne['lettreCategorie']] = intval($ligne['placesReservees']);                   
+                    $ligne = $req->fetch(PDO::FETCH_ASSOC);
+                }
+        } catch (PDOException $e) {
+            print "Erreur !: " . $e->getMessage();
+            die();
+        }
+        return $resultat;
+    }
+
+    function getPlacesDispoTraverseesByLiaisonAndDate($idLiaison, $date){
+
+        // pour chaque traversée/categorie aller compter : nb de place reservées dans detail_reservation
+        $resultat = array();
+        try {
+            // TODO
+        
+        } catch (PDOException $e) {
+            print "Erreur !: " . $e->getMessage();
+            die();
+        }
         return $resultat;
     }
 

@@ -1,5 +1,4 @@
 <?php
-
 if ($_SERVER["SCRIPT_FILENAME"] == __FILE__) {
     $racine = "..";
 }
@@ -15,9 +14,9 @@ if (isset($_GET['id'])){
     $secteurs = getLiaisons();
 }
 
-
 // appel du script de vue qui permet de gerer l'affichage des donnees
 include "$racine/vue/header.php";
 include "$racine/vue/vueAfficheLiaisons.php";
 include "$racine/vue/footer.php";
 ?>
+
