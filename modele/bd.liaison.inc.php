@@ -109,8 +109,8 @@ include_once "bd.inc.php";
         try {
             $cnx = getPDO();
             $req = $cnx->prepare("SELECT L.code, L.distance, PD.nom as portDepart, PA.nom as portArrivee FROM liaison L 
-            JOIN port PD on PD.id=L.idPortDepart 
-            JOIN port PA on PA.id=L.idPortArrivee
+            JOIN port PD on PD.nom_court=L.portDepart 
+            JOIN port PA on PA.nom_court=L.portArrivee
             where L.codeSecteur=:idSecteur");
             $req->bindValue(':idSecteur', $idSecteur, PDO::PARAM_INT);
             $req->execute();
@@ -132,8 +132,8 @@ include_once "bd.inc.php";
         try {
             $cnx = getPDO();
             $req = $cnx->prepare("SELECT L.code, L.codeSecteur, L.distance, PD.nom as portDepart, PA.nom as portArrivee FROM liaison L 
-            JOIN port PD on PD.id=L.idPortDepart 
-            JOIN port PA on PA.id=L.idPortArrivee");
+            JOIN port PD on PD.nom_court=L.portDepart 
+            JOIN port PA on PA.nom_court=L.portArrivee");
             $req->execute();
 
             $ligne = $req->fetch(PDO::FETCH_ASSOC);
@@ -152,8 +152,8 @@ include_once "bd.inc.php";
         try {
             $cnx = getPDO();
             $req = $cnx->prepare("SELECT L.code, S.nom, L.distance, PD.nom as portDepart, PA.nom as portArrivee FROM liaison L INNER JOIN secteur S on L.codeSecteur=S.id
-            JOIN port PD on PD.id=L.idPortDepart 
-            JOIN port PA on PA.id=L.idPortArrivee where L.code=:id");
+            JOIN port PD on PD.nom_court=L.portDepart 
+            JOIN port PA on PA.nom_court=L.portArrivee where L.code=:id");
             $req->bindValue(':id', $id, PDO::PARAM_INT);
             $req->execute();
             $resultat = $req->fetch(PDO::FETCH_ASSOC);
@@ -165,17 +165,17 @@ include_once "bd.inc.php";
     }
 
 
-    function getTarifsbyLiaison($idLiaison){
+    function getTarifsbyPeriode($idPeriode){
         $resultat = array();
         try {
             $cnx = getPDO();
-            $req = $cnx->prepare("SELECT * FROM tarification where codeLiaison=:idLiaison");
-            $req->bindValue(':idLiaison', $idLiaison, PDO::PARAM_INT);
+            $req = $cnx->prepare("SELECT libelleCategorie as categorie, libelleTypeBillet as type, tarif, libellePeriode as periode FROM tarification t JOIN periode p ON t.idPeriode=p.idPeriode JOIN type_billet tb ON (t.idCategorie, t.idTypebillet) = (tb.idCategorie, tb.idTypebillet) JOIN categorie c ON t.idCategorie = c.idCategorie ORDER BY t.idCategorie, t.idTypebillet WHERE idPeriode:idPeriode");
+            $req->bindValue(':idPeriode', $idPeriode, PDO::PARAM_INT);
             $req->execute();
 
             $ligne = $req->fetch(PDO::FETCH_ASSOC);
             while ($ligne) {
-                $resultat[$ligne['lettreCategorie']][$ligne['numType']][$ligne['dateDeb']] = $ligne['tarif'];
+                $resultat[$ligne['categorie']][$ligne['type']][$ligne['periode']] = $ligne['tarif'];
                 $ligne = $req->fetch(PDO::FETCH_ASSOC);
             }
         } catch (PDOException $e) {
@@ -189,12 +189,13 @@ include_once "bd.inc.php";
         $resultat = array();
         try {
             $cnx = getPDO();
-            $req = $cnx->prepare("SELECT * FROM tarification");
+            $req = $cnx->prepare("SELECT libelleCategorie as categorie, libelleTypeBillet as type, tarif, libellePeriode as periode FROM tarification t JOIN periode p ON t.idPeriode=p.idPeriode JOIN type_billet tb ON (t.idCategorie, t.idTypebillet) = (tb.idCategorie, tb.idTypebillet) JOIN categorie c ON t.idCategorie = c.idCategorie ORDER BY t.idCategorie, t.idTypebillet");
+
             $req->execute();
 
             $ligne = $req->fetch(PDO::FETCH_ASSOC);
             while ($ligne) {
-                $resultat[$ligne['codeLiaison']][$ligne['lettreCategorie']][$ligne['numType']][$ligne['dateDeb']] = $ligne['tarif'];
+                $resultat[] = $ligne;
                 $ligne = $req->fetch(PDO::FETCH_ASSOC);
             }
         } catch (PDOException $e) {
@@ -202,6 +203,27 @@ include_once "bd.inc.php";
             die();
         }
         return $resultat;
+    }
+
+    function getTarifsPeriode($idPeriode){
+        $resultat = array();
+        try {
+            $cnx = getPDO();
+            $req = $cnx->prepare("SELECT libelleCategorie as categorie, libelleTypeBillet as type, tarif, libellePeriode as periode FROM tarification t JOIN periode p ON t.idPeriode=p.idPeriode JOIN type_billet tb ON (t.idCategorie, t.idTypebillet) = (tb.idCategorie, tb.idTypebillet) JOIN categorie c ON t.idCategorie = c.idCategorie WHERE t.idPeriode=:idPeriode ORDER BY t.idCategorie, t.idTypebillet");
+            $req->bindValue(':idPeriode', $idPeriode, PDO::PARAM_STR);
+            $req->execute();
+
+            $ligne = $req->fetch(PDO::FETCH_ASSOC);
+            while ($ligne) {
+                $resultat[] = $ligne;
+                $ligne = $req->fetch(PDO::FETCH_ASSOC);
+            }
+            
+        } catch (PDOException $e) {
+            print "Erreur !: " . $e->getMessage();
+            die();
+        }
+        return $resultat;   
     }
 
     function getPeriodes(){
@@ -244,26 +266,20 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getCategoriesTypes(){
+    function getTypesBillets(){
         //$resultat = array();
 
         try {
-            $categories = getCategories();
-            foreach ($categories as $categorie){
-                $resultat[$categorie['lettre']]['lettre'] =  $categorie['lettre'];
-                $resultat[$categorie['lettre']]['libelle'] =  $categorie['libelle'];
-                $cnx = getPDO();
-                $req = $cnx->prepare("SELECT * FROM type WHERE lettreCategorie=:idCategorie");
-                $req->bindValue(':idCategorie', $categorie['lettre'], PDO::PARAM_STR);
-                $req->execute();
+            $cnx = getPDO();
+            $req = $cnx->prepare("SELECT * FROM type_billet JOIN categorie ON type_billet.idCategorie = categorie.idCategorie");
+            $req->execute();
 
+            $ligne = $req->fetch(PDO::FETCH_ASSOC);
+            while ($ligne) {
+                $resultat[] = $ligne;
                 $ligne = $req->fetch(PDO::FETCH_ASSOC);
-                while ($ligne) {
-                    $resultat[$categorie['lettre']]['types'][]= $ligne;
-                    $ligne = $req->fetch(PDO::FETCH_ASSOC);
-                }
             }
-            
+                        
         } catch (PDOException $e) {
             print "Erreur !: " . $e->getMessage();
             die();

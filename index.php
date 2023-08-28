@@ -1,6 +1,7 @@
 <?php
-include "getRacine.php";
-include "$racine/controleur/controleurPrincipal.php";
+require_once "getRacine.php";
+require_once "infoBDD.inc.php";
+require_once "$racine/controleur/controleurPrincipal.php";
 
 if (isset($_GET["action"])){
     $action = $_GET["action"];
@@ -10,6 +11,6 @@ else{
 }
 
 $fichier = controleurPrincipal($action);
-include "$racine/controleur/$fichier";
+require "$racine/controleur/$fichier";
 ?>
      

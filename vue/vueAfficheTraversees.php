@@ -1,5 +1,7 @@
 <?php
-  //var_dump($liaisons);
+  var_dump($placesCapacite);
+  var_dump($categories);
+  var_dump($placesReservees);
   //var_dump($LiaisonSelectionnee);
   //var_dump($traversees)
   //var_dump($places);
@@ -90,7 +92,7 @@
               <?php 
               foreach ($categories as $categorie){
               ?>
-                <th scope="col">nombre<br/> <?= $categorie['libelle'] ?></th>
+                <th scope="col">nombre<br/> <?= $categorie['libelleCategorie'] ?></th>
               <?php
               }
               ?>
@@ -108,9 +110,9 @@
               <td><?= $traversee['nom'] ?></td>
               <?php
               foreach ($categories as $categorie){
-                $placesDispo = $placesCapacite[$traversee['num']][$categorie['lettre']];
-                if (isset($placesReservees[$traversee['num']][$categorie['lettre']])){
-                  $placesDispo = $placesCapacite[$traversee['num']][$categorie['lettre']] - $placesReservees[$traversee['num']][$categorie['lettre']];
+                $placesDispo = $placesCapacite[$traversee['num']][$categorie['idCategorie']];
+                if (isset($placesReservees[$traversee['num']][$categorie['idCategorie']])){
+                  $placesDispo = intval($placesCapacite[$traversee['num']][$categorie['idCategorie']]) - intval($placesReservees[$traversee['num']][$categorie['idCategorie']]);
                 }
 
               ?>

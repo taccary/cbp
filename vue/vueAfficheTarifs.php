@@ -1,81 +1,48 @@
 <?php
-  //var_dump($liaisons);
-  
-  //var_dump($tarifs);
-  //var_dump($categoriesTypes);
-  
-  //var_dump($categories);
-  //var_dump($periodes);
-  //var_dump($tarifsLiaisons);
+  //var_dump($lesTarifs);
 ?>
-  <h1><?= $titre ?></h1>
-  <?php foreach($liaisons as $liaison){
-  ?>
-    <h3>Liaison <?= $liaison['code'] ?> : <?= $liaison['portDepart'] ?> - <?= $liaison['portArrivee'] ?> </h3>
-    <table class="table display">
-          <thead>
-            <tr>
-              <th rowspan="2" scope="col">Catégorie</th>
-              <th rowspan="2" scope="col">Type</th>
-              <th colspan="<?= count($periodes) ?>" scope="col">Période</th>
-            </tr>
-            <tr>
-              <?php 
-              foreach ($periodes as $periode){
-              ?>
-                <th scope="col"><?= $periode['dateDeb'] ?><br/><?= $periode['dateFin'] ?></th>
-              <?php
-              }
-              ?>
-            </tr>
-
-          </thead>
-          <tbody>
-        
-          <?php
-          foreach ($categoriesTypes as $categoriesType){
-            $i = 1; // itérateur pour différentier la première ligne
-            $nbTypes = count($categoriesType['types']);
-          ?> 
-                <?php
-                foreach ($categoriesType['types'] as $type){
-                  if ($i==1){
-                  ?>
-                    <tr>
-                      <th scope="row" rowspan="<?= $nbTypes ?>"><?= $categoriesType['lettre'] ?> - <?= $categoriesType['libelle'] ?></td>
-                  <?php } else { ?>
-                    <tr>
-                  <?php } 
-                  ?>
-
-                      <th scope="row"><?= $type['lettreCategorie'] ?><?= $type['num'] ?> - <?= $type['libelle'] ?></td>
-
-                      <?php
-                      foreach ($periodes as $periode){
-                        $montant = "-";
-                        if (isset($tarifs[$liaison['code']][$type['lettreCategorie']][$type['num']][$periode['dateDeb']])){
-                          $montant = $tarifs[$liaison['code']][$type['lettreCategorie']][$type['num']][$periode['dateDeb']];
-                        }
-                      ?>
-                          <td><?= $montant ?></td>
-                      <?php
-                      }
-                      ?>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-
-                <?php
-                $i++;
-                }
-                ?>
-
-          <?php
+  <form method="post" action="index.php?action=tarifs">
+      <div>
+          <label for="idPeriode">Choix d'une periode :</label>
+          <select name="idPeriode">
+          <option value="">--sélectionner une periode--</option>
+        <?php
+        foreach ($lesPeriodes as $unePeriode) {
+          $selected = "";
+          if ((isset($_POST['idPeriode'])) && ($_POST['idPeriode']==$unePeriode['idPeriode'])) {
+            $selected = "selected";
           }
-          ?>
+          echo '<option value="'.$unePeriode['idPeriode'].'" '.$selected.'>'.$unePeriode['libellePeriode'].'</option>';
+        }
+        ?>
+        </select>
+      </div>
+    <input type="submit" value="Afficher les tarifs" title="Afficher les tarifs" />
+  </form>
 
-      </tbody>
-    </table>
-  <?php } ?>
+<br>
+
+  <h1><?= $titre ?></h1>
+    	<table id="myTable" class="table table-bordered table-striped">
+		<thead>
+			<th>Catégorie</th>
+			<th>Type de billet</th>
+			<th>tarif</th>
+			<th>Période</th>
+		</thead>
+		<tbody>
+			<?php
+				foreach ($lesTarifs as $unTarif){
+				?>
+					<tr>
+						<td><?= $unTarif['categorie'] ?></td>
+						<td><?= $unTarif['type'] ?></td>
+						<td><?= $unTarif['tarif'] ?></td>
+						<td><?= $unTarif['periode'] ?></td>
+					</tr>
+				<?php
+				}
+			?>
+		</tbody>
+	</table>
 
