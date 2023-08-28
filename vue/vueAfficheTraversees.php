@@ -1,10 +1,6 @@
 <?php
-  var_dump($placesCapacite);
-  var_dump($categories);
-  var_dump($placesReservees);
-  //var_dump($LiaisonSelectionnee);
-  //var_dump($traversees)
-  //var_dump($places);
+  // var_dump($placesCapacite);
+  // var_dump($placesReservees);
 ?>
 
 
