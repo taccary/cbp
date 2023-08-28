@@ -205,7 +205,13 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getTarifsPeriode($idPeriode){
+    /**
+     * getTarifsPeriode : Retourne l'ensemble des tarifs pour une periode donnée
+     *
+     * @param string $idPeriode
+     * @return array
+     */
+    function getTarifsPeriode(string $idPeriode) : array {
         $resultat = array();
         try {
             $cnx = getPDO();
@@ -226,7 +232,12 @@ include_once "bd.inc.php";
         return $resultat;   
     }
 
-    function getPeriodes(){
+    /**
+     * getPeriodes : Retourne l'ensemble des periodes
+     *
+     * @return array
+     */
+    function getPeriodes() :array {
         $resultat = array();
 
         try {
@@ -246,7 +257,12 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getCategories(){
+    /**
+     * getCategories : Retourne l'ensemble des categories
+     *
+     * @return array
+     */
+    function getCategories() :array {
         $resultat = array();
 
         try {
@@ -266,7 +282,12 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getTypesBillets(){
+    /**
+     * getTypesBillets : Retourne l'ensemble des types de billets avec leur categorie
+     *
+     * @return array
+     */
+    function getTypesBillets() : array{
         //$resultat = array();
 
         try {
@@ -287,7 +308,14 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getTraverseesByLiaisonAndDate($idLiaison, $date){
+    /**
+     * getTraverseesByLiaisonAndDate : Retourne l'ensemble des traversées pour une liaison et une date données
+     *
+     * @param integer $idLiaison
+     * @param string $date
+     * @return array
+     */
+    function getTraverseesByLiaisonAndDate(int $idLiaison, string $date) : array {
         $resultat = array();
         try {
             $cnx = getPDO();
@@ -311,13 +339,20 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getPlacesTraverseesByLiaisonAndDate($idLiaison, $date){
-        // pour chaque traversée, pour chaque categorie on compte le nb de place totales dans de ce bateau dans contenance_bateau 
+    /**
+     * getPlacesTraverseesByLiaisonAndDate : Retourne l'ensemble des traversées pour une liaison et une date données avec le nb de places totales pour chaque categorie dans ce bateau
+     * retourne un tableau associatif de la forme [numTraversee][lettreCategorie] = nbPlacesMax
+     * 
+     * @param [type] $idLiaison
+     * @param [type] $date
+     * @return array
+     */
+    function getPlacesTraverseesByLiaisonAndDate(int $idLiaison, string $date) : array {
+        
         $resultat = array();
         try {
             $cnx = getPDO();
-            $req = $cnx->prepare("SELECT num, idBateau FROM traversee T where codeLiaison=:idLiaison
-            AND date=:date");
+            $req = $cnx->prepare("SELECT num, idBateau FROM traversee T where codeLiaison=:idLiaison AND date=:date");
             $req->bindValue(':idLiaison', $idLiaison, PDO::PARAM_INT);
             $req->bindValue(':date', $date, PDO::PARAM_STR);
             $req->execute();
@@ -342,33 +377,18 @@ include_once "bd.inc.php";
         return $resultat;
     }
 
-    function getPlacesReservesTraversees(){
-        // pour chaque traversée/categorie aller compter : nb de place reservées dans detail_reservation
+    /**
+     * getPlacesReservesTraversees : Compte le nb de place reservées dans detail_reservation pour chaque traversée et categorie
+     * retourne un tableau associatif de la forme [numTraversee][lettreCategorie] = nbPlacesReservees
+     *
+     * @return array
+     */
+    function getPlacesReservesTraversees() : array {
         $resultat = array();
         try {
-            $cnx = getPDO();
-            $req = $cnx->prepare("SELECT r.numTraversee, d.lettreCategorie, sum(d.quantité) as 'placesReservees' FROM reservation r JOIN detail_reservation d ON d.numReservation = r.num GROUP BY r.numTraversee, d.lettreCategorie");
-            $req->execute();
+            
+            // code à écrire
 
-            $ligne = $req->fetch(PDO::FETCH_ASSOC);
-            while ($ligne) {
-                    $resultat[$ligne['numTraversee']][$ligne['lettreCategorie']] = intval($ligne['placesReservees']);                   
-                    $ligne = $req->fetch(PDO::FETCH_ASSOC);
-                }
-        } catch (PDOException $e) {
-            print "Erreur !: " . $e->getMessage();
-            die();
-        }
-        return $resultat;
-    }
-
-    function getPlacesDispoTraverseesByLiaisonAndDate($idLiaison, $date){
-
-        // pour chaque traversée/categorie aller compter : nb de place reservées dans detail_reservation
-        $resultat = array();
-        try {
-            // TODO
-        
         } catch (PDOException $e) {
             print "Erreur !: " . $e->getMessage();
             die();

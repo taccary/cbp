@@ -24,7 +24,7 @@
             if ($i==1){
             ?>
               <tr>
-                <th scope="row" rowspan="<?= $nbLiaisons ?>">
+                <th scope="row" rowspan="4">
                   <?= $secteur['nom'] ?>
                 </th>
             <?php } else { ?>

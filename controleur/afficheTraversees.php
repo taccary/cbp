@@ -19,8 +19,6 @@ if (isset($_POST['liaison']) && isset($_POST['date'])){
     $LiaisonSelectionnee = getLiaisonById($idLiaison);
     $traversees = getTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
     $placesCapacite = getPlacesTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
-    $placesReservees = getPlacesReservesTraversees();
-    // $placesDispo = getPlacesDispoTraverseesByLiaisonAndDate($idLiaison, $dateTraversee);
 }
 
 $titre = "Horaires des traversées";
