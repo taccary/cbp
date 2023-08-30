@@ -2,33 +2,27 @@
 <html lang="fr">
 
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
+	<link rel="shortcut icon" href="skin/favicon.ico" />
+	<link rel="icon" href="skin/favicon_anime.gif" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title><?= $titre ?></title>
-
-
-	<link href="bib/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+	<meta name="keywords" content="<?php echo $keywords; ?>" />
+	<meta name="description" content="<?php echo $description; ?>" />
+	<meta name="robots" content="index,follow,all" />
+	<title><?php echo $titre; ?></title>
+	
 	<link href="css/style.css" rel="stylesheet" type="text/css" />
-	
-	<script type="text/javascript" src="bib/js/jquery-3.3.1.min.js"></script>
 
-	<script type="text/javascript" src="bib/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="bib/js/fonctions.js"></script>
-	
-	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-	
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+	<!-- fonction jquery pour charger les modales -->
+	<script src="bib/fonctions.js"></script>
 
+	<!-- bootstrap en version v5.2.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+	<!-- jquery en version v3.6.3  -->
+	<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
 
 </head>
 
